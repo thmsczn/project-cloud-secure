@@ -1,0 +1,218 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: url('https://cloud.thmsczn.ovh/images/background.svg') no-repeat center center fixed; 
+    background-size: cover;
+    height: 100vh;
+    width: 100vw;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 60px;
+    width: 100%;
+    padding: 20px 10%;
+    background: linear-gradient(to right, #61ae60, #233dff, #050a30);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    margin-bottom: 1px;
+}
+
+.logo {
+    top : 0px;
+    left :0px;
+    width: 20%;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.navbar a {
+    position: relative;
+    font-size: 16px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    margin-right: 30px;
+}
+
+.navbar a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 100%;
+    height: 2px;
+    background: #fff;
+    border-radius: 5px;
+    transform: translateY(10px);
+    opacity: 0;
+    transition: .5s;
+}
+
+.navbar a:hover::after {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.container {
+    position: flex;
+    display: flex;
+    width: 100%;
+    color: #fff;
+    margin-top: 60px;
+    background-color: none;
+    
+}
+
+.column1 {
+    flex: 30%;
+    height: 100%;
+    margin-top: 20px;
+    margin-left : 20px;
+    margin-right : 10px;
+    border-radius: 10px;
+    background-color: #171321;
+    justify-content: center;
+    align-items: center;
+}
+
+.column1 .card img {
+    width: 50%;
+    margin-top: 10px;
+    margin-left: 25%;
+    border-radius: 50px;
+}
+
+.column1 h3 {
+    text-align: center;
+}
+
+.column1 h4 {
+    margin-left : 5%;
+}
+
+.card-body a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 30%;
+}
+
+.card-body a:hover {
+    text-decoration: underline;
+} 
+
+.card button {
+    width: 70%;
+    margin-top : 20px;
+    margin-bottom: 20px;
+    margin-left: 15%;
+    height: 45px;
+    background: #61ae60;
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    color: #fff;
+    font-weight: 500;
+
+}
+
+.card .disabled {
+    width: 70%;
+    margin-top : 20px;
+    margin-bottom: 20px;
+    margin-left: 15%;
+    height: 45px;
+    background: red;
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    cursor: none;
+    font-size: 1em;
+    color: #fff;
+    font-weight: 500;
+
+}
+
+.column2 {
+    flex: 70%;
+    height: 100%;
+    margin-left : 10px;
+    margin-right : 20px;
+    border-radius: 10px;
+    justify-content: center;
+    background-color: none;
+}
+
+.line1 h1, .line2 h1{
+    padding: 10px;
+}
+
+.line1 h3, .line2 h3{
+    padding: 20px;
+}
+
+.column2 .line1 {
+    height: 50%;
+    border-radius: 10px;
+    background-color: #171321;
+}
+
+.column2 .line2 {
+    height: 50%;
+    border-radius: 10px;
+    background-color: none;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.responsive-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    width: 24%;
+    background-color: #171321;
+}
+
+.responsive-button:hover {
+    color: #fff;
+    cursor: pointer;
+    background-color: #233dff;
+}
+
+.responsive-button ion-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 5px;
+}
+
+.weather-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-grow: 1;
+    color: #fff;
+}
+
+.weather-container .btcPrice {
+    margin-right: 20px;
+}
