@@ -41,11 +41,11 @@
             if ($result === FALSE) {
                 $errorOccurred = true; // Mettez la variable d'erreur à vrai
                 echo '<div class="alert alert-danger" role="alert">
-                        <h4 class="alert-heading">Erreur</h4>
+                        <h4 class="alert-heading" style="color: white;">Erreur</h4>
                         <p>Erreur : Une erreur s\'est produite lors de la requête vers l\'API GitHub.</p>
                         <hr>
                         <p class="mb-0">Erreur Handler by Antoine</p>
-                    </div>';
+                        </div>';
             }
 
             // Parsez le résultat pour obtenir des informations sur l'utilisateur
@@ -111,7 +111,6 @@
             <img src="<?php echo $img;?>">
             <div class="card-body">
                 <h3 class="uppercase"><strong>BIENVENUE <?php echo $username; ?> !</strong></h3>
-                <h4><strong>Nom d'utilisateur : </strong><?php echo $username; ?></h4>
                 <h4><strong>ID : </strong><?php echo $id; ?></h4>
                 <h4><strong>Bio : </strong><?php echo $bio; ?></h4>
                 <h4><strong><?php echo $followers; ?></strong> followers</h4>
@@ -135,21 +134,21 @@
             <h3>Aucune alerte</h3>
         </div>
         <div class="line2">
-            <button class="responsive-button" href="#">
+            <button id="btn1" class="responsive-button" onclick="buttonClicked(this, 'btn2', 'Déploiement créé')">
                 <ion-icon name="play-outline"></ion-icon>
-                <span>Bouton 1</span>
+                <span>Création du déploiement</span>
             </button>
-            <button class="responsive-button" href="#">
-                <ion-icon name="play-outline"></ion-icon>
-                <span>Bouton 2</span>
+            <button id="btn2" class="responsive-button" onclick="buttonClicked(this, 'btn3', 'Code vérifié')" disabled>
+                <ion-icon name="close-outline" style="color: red;"></ion-icon>
+                <span>Vérification du code</span>
             </button>
-            <button class="responsive-button" href="#">
-                <ion-icon name="play-outline"></ion-icon>
-                <span>Bouton 3</span>
+            <button id="btn3" class="responsive-button" onclick="buttonClicked(this, 'btn4', 'Sécurité confirmée')" disabled>
+                <ion-icon name="close-outline" style="color: red;"></ion-icon>
+                <span>Vérification de la sécurité</span>
             </button>
-            <button class="responsive-button" href="#">
-                <ion-icon name="play-outline"></ion-icon>
-                <span>Bouton 4</span>
+            <button id="btn4" class="responsive-button" onclick="buttonClicked(this, null, 'Prêt pour le déploiement')" disabled>
+                <ion-icon name="close-outline" style="color: red;"></ion-icon>
+                <span>Déploiement terminé</span>
             </button>
         </div>
     </div>
@@ -159,7 +158,38 @@
 <script src="./js/api.js"></script>
 <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
- 
+<script>
+        const socket = new WebSocket('ws://6.tcp.eu.ngrok.io:17648');
+
+        socket.addEventListener('open', function (event) {
+            socket.send('Connection Established');
+        });
+
+        socket.addEventListener('message', function (event) {
+            console.log(event.data);
+        });
+
+        const contactServer = () => {
+            socket.send("Debut du deploiement");
+        }
+
+        
+function buttonClicked(button, nextButtonId, newText) {
+    button.innerHTML = '<ion-icon name="checkmark-outline" style="color: green;"></ion-icon><span>' + newText + '</span>';
+    button.disabled = true;
+
+    if (nextButtonId) {
+        var nextButton = document.getElementById(nextButtonId);
+        if (nextButton) {
+            nextButton.disabled = false;
+            nextButton.innerHTML = '<ion-icon name="play-outline"></ion-icon><span>' + nextButton.textContent.trim() + '</span>';
+        }
+    }
+}
+
+
+
+</script>
 </body>
  
 </body>
