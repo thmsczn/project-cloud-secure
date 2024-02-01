@@ -12,8 +12,8 @@
 <body>
 
     <?php
-    $clientId = '************';
-    $clientSecret = '*************';
+    $clientId = '*********************';
+    $clientSecret = '**************************';
     $code = $_GET['code'];
     $userAgent = $_SERVER['HTTP_USER_AGENT'];
 

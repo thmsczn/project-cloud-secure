@@ -1,9 +1,9 @@
 <?php
 // Informations d'identification
-define('DB_SERVER', 'thmsczsadmin.mysql.db');
-define('DB_USERNAME', 'thmsczsadmin');
-define('DB_PASSWORD', 'ikyp9h1e6OpfbAiJoOMU');
-define('DB_NAME', 'thmsczsadmin');
+define('DB_SERVER', '****************');
+define('DB_USERNAME', '**************');
+define('DB_PASSWORD', '*********');
+define('DB_NAME', '*********');
  
 // Connexion à la base de données MySQL 
 $conn = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
