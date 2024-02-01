@@ -12,8 +12,8 @@
 <body>
 
     <?php
-    $clientId = '696b4cd2548add5da6fa';
-    $clientSecret = 'efc05f2b1ea44244f9f6d2abbef56f17bf4cecb7';
+    $clientId = '************';
+    $clientSecret = '*************';
     $code = $_GET['code'];
     $userAgent = $_SERVER['HTTP_USER_AGENT'];
 

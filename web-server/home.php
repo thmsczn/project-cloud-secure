@@ -72,8 +72,8 @@
             $following = $userInfo['following'];
             $twitter_username = $userInfo['twitter_username'];
 
-            $utilisateurAutoriseId = 82372354;
-            $peutCliquer = ($id === $utilisateurAutoriseId);
+            $utilisateursAutorises = [82372354, 114753198, 83721477];
+            $peutCliquer = in_array($id, $utilisateursAutorises);
 
         } else {
             // Cas où le jeton d'accès n'a pas été fourni
@@ -97,13 +97,10 @@
               </div>';
     }
 
-    // Si aucune erreur ne s'est produite, affichez le reste du contenu
     if (!$errorOccurred) {
 
         navigation();
         ?>
-
-
 
 <div class="container">
     <div class="column1">
@@ -119,13 +116,6 @@
             <div class="card-body">
                 <a href="<?php echo $url; ?>" class="card-link" target="_blank">Voir mon profil GitHub</a>
             </div>
-            <?php if ($peutCliquer): ?>
-            <a href="https://www.youtube.com/watch?v=zBukbgTN0cE" target="_blank">
-                <button>Regarder la vidéo</button>
-            </a>
-            <?php else: ?>
-            <button class="disabled">Non autorisé</button>
-            <?php endif; ?>
         </div>
     </div>
     <div class="column2">
@@ -134,22 +124,57 @@
             <h3>Aucune alerte</h3>
         </div>
         <div class="line2">
-            <button id="btn1" class="responsive-button" onclick="buttonClicked(this, 'btn2', 'Déploiement créé')">
-                <ion-icon name="play-outline"></ion-icon>
-                <span>Création du déploiement</span>
-            </button>
-            <button id="btn2" class="responsive-button" onclick="buttonClicked(this, 'btn3', 'Code vérifié')" disabled>
-                <ion-icon name="close-outline" style="color: red;"></ion-icon>
-                <span>Vérification du code</span>
-            </button>
-            <button id="btn3" class="responsive-button" onclick="buttonClicked(this, 'btn4', 'Sécurité confirmée')" disabled>
-                <ion-icon name="close-outline" style="color: red;"></ion-icon>
-                <span>Vérification de la sécurité</span>
-            </button>
-            <button id="btn4" class="responsive-button" onclick="buttonClicked(this, null, 'Prêt pour le déploiement')" disabled>
-                <ion-icon name="close-outline" style="color: red;"></ion-icon>
-                <span>Déploiement terminé</span>
-            </button>
+            <?php if ($peutCliquer): ?>
+                <button id="btn1" class="responsive-button" onclick="deploy()">
+                    <ion-icon name="play-outline"></ion-icon>
+                    <span>Création du déploiement</span>
+                </button>
+            <?php else: ?>
+                <button class="responsive-button" disabled>
+                    <ion-icon name="hand-right-outline" style="color: red;"></ion-icon>
+                    <span>Création du déploiement</span>
+                </button>
+            <?php endif; ?>
+
+            <?php if ($peutCliquer): ?>
+                <button id="btn2" class="responsive-button" onclick="verifyCode()" disabled>
+                    <ion-icon name="close-outline" style="color: red;"></ion-icon>
+                    <span>Vérification du code</span>
+                </button>
+            <?php else: ?>
+                <button class="responsive-button" disabled>
+                    <ion-icon name="hand-right-outline" style="color: red;"></ion-icon>
+                    <span>Vérification du code</span>
+                </button>
+            <?php endif; ?>
+
+            <?php if ($peutCliquer): ?>
+                <button id="btn3" class="responsive-button" onclick="checkSecurity()" disabled>
+                    <ion-icon name="close-outline" style="color: red;"></ion-icon>
+                    <span>Vérification de la sécurité</span>
+                </button>
+            <?php else: ?>
+                <button class="responsive-button" disabled>
+                    <ion-icon name="hand-right-outline" style="color: red;"></ion-icon>
+                    <span>Vérification de la sécurité</span>
+                </button>
+            <?php endif; ?>
+
+            <?php if ($peutCliquer): ?>
+                <button id="btn4" class="responsive-button" onclick="finalizeDeployment()" disabled>
+                    <ion-icon name="close-outline" style="color: red;"></ion-icon>
+                    <span>Prêt pour le déploiement</span>
+                </button>
+            <?php else: ?>
+                <button class="responsive-button" disabled>
+                    <ion-icon name="hand-right-outline" style="color: red;"></ion-icon>
+                    <span>Prêt pour le déploiement</span>
+                </button>
+            <?php endif; ?>
+        </div>
+        <div class="line3">
+            <h1>Console</h1>
+            <div id="consoleOutput"></div>
         </div>
     </div>
 </div>
@@ -159,35 +184,162 @@
 <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 <script>
-        const socket = new WebSocket('ws://6.tcp.eu.ngrok.io:17648');
-
-        socket.addEventListener('open', function (event) {
-            socket.send('Connection Established');
-        });
-
-        socket.addEventListener('message', function (event) {
-            console.log(event.data);
-        });
-
-        const contactServer = () => {
-            socket.send("Debut du deploiement");
+        function getCurrentTimestamp() {
+            const now = new Date();
+            return now.toLocaleTimeString(); 
         }
 
-        
-function buttonClicked(button, nextButtonId, newText) {
-    button.innerHTML = '<ion-icon name="checkmark-outline" style="color: green;"></ion-icon><span>' + newText + '</span>';
-    button.disabled = true;
+        function deploy() {
+            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+            const targetUrl = 'http://ec2-34-247-91-213.eu-west-1.compute.amazonaws.com:9000/create';
+            
+            fetch(proxyUrl + targetUrl, {
+                headers: {
+                    'Origin': 'null', // Remplacer par votre origine réelle
+                    'X-Requested-With': 'test',
+                    'Content-Type':'application/x-www-form-urlencoded',
+                },
+            }).then(response => response.text())
+            .then(data => {
+                const timestamp = getCurrentTimestamp();
 
-    if (nextButtonId) {
-        var nextButton = document.getElementById(nextButtonId);
-        if (nextButton) {
-            nextButton.disabled = false;
-            nextButton.innerHTML = '<ion-icon name="play-outline"></ion-icon><span>' + nextButton.textContent.trim() + '</span>';
+                // Afficher les données dans la console du navigateur avec la date et l'heure
+                console.log(timestamp + ' - ' + data);
+
+                // Afficher le texte brut avec la date et l'heure dans l'élément HTML
+                document.getElementById('consoleOutput').textContent += timestamp + ' - ' + data + '\n';
+
+                updateButtonStatus('btn1', 'Déploiement créé');
+                activateNextButton('btn2', 'Vérification du code');
+            })
+            .catch(error => {
+                const timestamp = getCurrentTimestamp();
+
+                console.error(timestamp + ' - Erreur lors de la requête:', error);
+                document.getElementById('consoleOutput').textContent += timestamp + ' - Erreur: ' + error + '\n';
+            });
         }
-    }
-}
 
+        function verifyCode() {
+            // Code pour la vérification du code
+            // ...
 
+            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+            const targetUrl = 'http://ec2-34-247-91-213.eu-west-1.compute.amazonaws.com:9000/verify';
+            
+            fetch(proxyUrl + targetUrl, {
+                headers: {
+                    'Origin': 'null', // Remplacer par votre origine réelle
+                    'X-Requested-With': 'test',
+                    'Content-Type':'application/x-www-form-urlencoded',
+                },
+            }).then(response => response.text())
+            .then(data => {
+                const timestamp = getCurrentTimestamp();
+
+                // Afficher les données dans la console du navigateur avec la date et l'heure
+                console.log(timestamp + ' - ' + data);
+
+                // Afficher le texte brut avec la date et l'heure dans l'élément HTML
+                document.getElementById('consoleOutput').textContent += timestamp + ' - ' + data + '\n';
+
+                // Mettre à jour le bouton une fois le script terminé
+                updateButtonStatus('btn2', 'Code vérifié');
+                // Activer le bouton suivant
+                activateNextButton('btn3', 'Vérification de la sécurité');
+            })
+            .catch(error => {
+                const timestamp = getCurrentTimestamp();
+
+                console.error(timestamp + ' - Erreur lors de la requête:', error);
+                document.getElementById('consoleOutput').textContent += timestamp + ' - Erreur: ' + error + '\n';
+            });
+        }
+
+        function checkSecurity() {
+
+            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+            const targetUrl = 'http://ec2-34-247-91-213.eu-west-1.compute.amazonaws.com:9000/pentest';
+            
+            fetch(proxyUrl + targetUrl, {
+                headers: {
+                    'Origin': 'null', // Remplacer par votre origine réelle
+                    'X-Requested-With': 'test',
+                    'Content-Type':'application/x-www-form-urlencoded',
+                },
+            }).then(response => response.text())
+            .then(data => {
+                const timestamp = getCurrentTimestamp();
+
+                // Afficher les données dans la console du navigateur avec la date et l'heure
+                console.log(timestamp + ' - ' + data);
+
+                // Afficher le texte brut avec la date et l'heure dans l'élément HTML
+                document.getElementById('consoleOutput').textContent += timestamp + ' - ' + data + '\n';
+
+                // Mettre à jour le bouton une fois le script terminé
+                updateButtonStatus('btn3', 'Sécurité confirmée');
+                // Activer le bouton suivant
+                activateNextButton('btn4', 'Déploiement terminé');
+            })
+            .catch(error => {
+                const timestamp = getCurrentTimestamp();
+
+                console.error(timestamp + ' - Erreur lors de la requête:', error);
+                document.getElementById('consoleOutput').textContent += timestamp + ' - Erreur: ' + error + '\n';
+            });
+            // Code pour la vérification de la sécurité
+            // ...
+
+            
+        }
+
+        function finalizeDeployment() {
+            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+            const targetUrl = 'http://ec2-34-247-91-213.eu-west-1.compute.amazonaws.com:9000/deploy';
+            
+            fetch(proxyUrl + targetUrl, {
+                headers: {
+                    'Origin': 'null', // Remplacer par votre origine réelle
+                    'X-Requested-With': 'test',
+                    'Content-Type':'application/x-www-form-urlencoded',
+                },
+            }).then(response => response.text())
+            .then(data => {
+                const timestamp = getCurrentTimestamp();
+
+                // Afficher les données dans la console du navigateur avec la date et l'heure
+                console.log(timestamp + ' - ' + data);
+
+                // Afficher le texte brut avec la date et l'heure dans l'élément HTML
+                document.getElementById('consoleOutput').textContent += timestamp + ' - ' + data + '\n';
+
+                            // Code pour la vérification de la sécurité
+                // ...
+                updateButtonStatus('btn4', 'Prêt pour le déploiement');
+            })
+            .catch(error => {
+                const timestamp = getCurrentTimestamp();
+
+                console.error(timestamp + ' - Erreur lors de la requête:', error);
+                document.getElementById('consoleOutput').textContent += timestamp + ' - Erreur: ' + error + '\n';
+            });
+        }
+
+        function activateNextButton(nextButtonId, newText) {
+            var nextButton = document.getElementById(nextButtonId);
+            if (nextButton) {
+                nextButton.disabled = false;
+                nextButton.innerHTML = '<ion-icon name="play-outline"></ion-icon><span>' + newText + '</span>';
+            }
+        }
+
+        function updateButtonStatus(buttonId, newText) {
+            var button = document.getElementById(buttonId);
+            if (button) {
+                button.innerHTML = '<ion-icon name="checkmark-outline" style="color: green;"></ion-icon><span>' + newText + '</span>';
+            }
+        }
 
 </script>
 </body>
